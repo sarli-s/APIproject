@@ -31,7 +31,7 @@ namespace WebAPIShop.Controllers
             {
                 return Ok(order);
             }
-            return NotFound();
+            return NoContent();
         }
   
         [HttpPost]
