@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Repository;
+namespace Entitys;
 
 public partial class User
 {
@@ -16,4 +16,6 @@ public partial class User
     public string UserLastName { get; set; }
 
     public string UserPassword { get; set; }
+
+    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 }

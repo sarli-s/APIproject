@@ -19,6 +19,22 @@
    "T4TemplatePath": null,
    "Tables": [
       {
+         "Name": "[dbo].[Categories]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Order_item]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Orders]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Products]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[User]",
          "ObjectType": 0
       }

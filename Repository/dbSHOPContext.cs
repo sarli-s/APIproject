@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace Repository;
+namespace Entitys;
 
 public partial class dbSHOPContext : DbContext
 {
@@ -13,10 +13,80 @@ public partial class dbSHOPContext : DbContext
     {
     }
 
+    public virtual DbSet<Category> Categories { get; set; }
+
+    public virtual DbSet<Order> Orders { get; set; }
+
+    public virtual DbSet<OrderItem> OrderItems { get; set; }
+
+    public virtual DbSet<Product> Products { get; set; }
+
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Category>(entity =>
+        {
+            entity.Property(e => e.CategoryId).HasColumnName("CATEGORY_ID");
+            entity.Property(e => e.CategoryName)
+                .IsRequired()
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("CATEGORY_NAME");
+        });
+
+        modelBuilder.Entity<Order>(entity =>
+        {
+            entity.Property(e => e.OrderId).HasColumnName("ORDER_ID");
+            entity.Property(e => e.OrderDate).HasColumnName("ORDER_DATE");
+            entity.Property(e => e.OrderSum).HasColumnName("ORDER_SUM");
+            entity.Property(e => e.UserId).HasColumnName("USER_ID");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_Orders_User");
+        });
+
+        modelBuilder.Entity<OrderItem>(entity =>
+        {
+            entity.ToTable("Order_item");
+
+            entity.Property(e => e.OrderItemId).HasColumnName("ORDER_ITEM_ID");
+            entity.Property(e => e.OrderId).HasColumnName("ORDER_ID");
+            entity.Property(e => e.ProductId).HasColumnName("PRODUCT_ID");
+            entity.Property(e => e.Quantity).HasColumnName("QUANTITY");
+
+            entity.HasOne(d => d.Order).WithMany(p => p.OrderItems)
+                .HasForeignKey(d => d.OrderId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Order_item_Orders");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.OrderItems)
+                .HasForeignKey(d => d.ProductId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Order_item_Products");
+        });
+
+        modelBuilder.Entity<Product>(entity =>
+        {
+            entity.Property(e => e.ProductId).HasColumnName("PRODUCT_ID");
+            entity.Property(e => e.CategoryId).HasColumnName("CATEGORY_ID");
+            entity.Property(e => e.Description)
+                .IsUnicode(false)
+                .HasColumnName("DESCRIPTION");
+            entity.Property(e => e.Price).HasColumnName("PRICE");
+            entity.Property(e => e.ProductName)
+                .IsRequired()
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("PRODUCT_NAME");
+
+            entity.HasOne(d => d.Category).WithMany(p => p.Products)
+                .HasForeignKey(d => d.CategoryId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Products_Categories");
+        });
+
         modelBuilder.Entity<User>(entity =>
         {
             entity.ToTable("User");
