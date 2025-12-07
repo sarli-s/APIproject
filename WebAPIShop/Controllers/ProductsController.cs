@@ -32,7 +32,7 @@ namespace WebAPIShop.Controllers
             {
                 return Ok(products);
             }
-            return NotFound();
+            return NoContent();
         }
     }
 }
