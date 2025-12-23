@@ -28,11 +28,11 @@ namespace Repository
 
 
 
-        public async Task<User> Login(LoginUser loginUser)
+        public async Task<User> Login(string email, string password)
         {
 
-            User? user = await _dbSHOPContext.Users.FirstOrDefaultAsync(x=>x.UserEmail==loginUser.LoginUserEmail &&
-            x.UserPassword==loginUser.LoginUserPassword);
+            User? user = await _dbSHOPContext.Users.FirstOrDefaultAsync(x=>x.UserEmail==email &&
+            x.UserPassword==password);
 
             return user;
         }

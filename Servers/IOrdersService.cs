@@ -1,4 +1,5 @@
-﻿using Entitys;
+﻿using DTOs;
+using Entitys;
 using Repository;
 
 namespace Servers
@@ -6,7 +7,7 @@ namespace Servers
     public interface IOrdersService
     {
 
-        Task<Order> AddOrder(Order order);
-        Task<Order> GetOrderById(int id);
+        Task<OrderDTO> AddOrder(OrderDTO order);
+        Task<OrderDTO> GetOrderById(int id);
     }
 }

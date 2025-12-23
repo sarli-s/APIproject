@@ -25,7 +25,7 @@ builder.Services.AddDbContext<dbSHOPContext>(options => options.UseSqlServer
 ("Data Source=srv2\\pupils;Initial Catalog=215949413_SHOP;Integrated Security=True;Trust Server Certificate=True"));
 
 
-
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // Add services to the container.
 
 builder.Services.AddControllers();

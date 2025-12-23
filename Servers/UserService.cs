@@ -2,49 +2,56 @@
 
 using Entitys;
 using Repository;
-
+using DTOs;
+using AutoMapper;
 
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
     private readonly IPasswordService _passwordService;
+    private readonly IMapper _mapper;
 
-    public UserService(IUserRepository userRepository, IPasswordService passwordService)
+    public UserService(IMapper mapper,IUserRepository userRepository, IPasswordService passwordService)
     {
         _userRepository = userRepository;
         _passwordService = passwordService;
+        _mapper = mapper;
     }
 
-    public async Task<User> GetUserById(int id)
+    public async Task<UserDTO> GetUserById(int id)
     {
-        return await _userRepository.GetUserById(id);
+        return _mapper.Map<User, UserDTO>(await _userRepository.GetUserById(id));
     }
 
-    public async Task<User> AddUser(User user)
+        
+
+    public async Task<UserDTO> AddUser(UserDTO user, string password)
     {
-        Password passwordAfterCheck = _passwordService.CheckPassword(user.UserPassword);
+        Password passwordAfterCheck = _passwordService.CheckPassword(password);
         if (passwordAfterCheck.Level < 3)
             return null;
-        return await _userRepository.AddUser(user);
+        return _mapper.Map<User, UserDTO>(await _userRepository.AddUser(_mapper.Map < UserDTO, User > (user)));
     }
     
 
-    public async Task<bool> UpdateUser(int id, User user)
+    public async Task<bool> UpdateUser(int id, UserDTO user, string password)
     {
-        Password passwordAfterCheck = _passwordService.CheckPassword(user.UserPassword);
+        Password passwordAfterCheck = _passwordService.CheckPassword(password);
         if (passwordAfterCheck.Level < 3)
         {
             return false;
         }
         else
         {
-            _userRepository.UpdateUser(id, user);
+            await _userRepository.UpdateUser(id, _mapper.Map <UserDTO, User > (user));
             return true;
         }
     }
-    public async Task<User> Login(LoginUser loginUser)
+    public async Task<UserDTO> Login(LoginUserDTO loginUser)
     {
-        return await _userRepository.Login(loginUser);
+     
+        UserDTO userDTO= _mapper.Map<User, UserDTO>(await _userRepository.Login(loginUser.UserEmail, loginUser.UserPassword));
+        return userDTO;
     }
     public void DeleteUser(int id)
     {

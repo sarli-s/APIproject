@@ -31,7 +31,7 @@ namespace WebAPIShop.Controllers
             {
                 return Ok(categories);
             }
-            return NotFound();
+            return NoContent();
         }
     }
 }

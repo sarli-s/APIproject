@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using Servers;
-using Entitys;
+using DTOs;
 using Repository;
 
 
@@ -24,9 +24,9 @@ namespace WebAPIShop.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> Get(int id) 
+        public async Task<ActionResult<UserDTO>> Get(int id) 
         {
-            User user = await _userService.GetUserById(id);
+            UserDTO user = await _userService.GetUserById(id);
             if(user!= null)
             {
                 return Ok(user);
@@ -35,19 +35,19 @@ namespace WebAPIShop.Controllers
         }
   
         [HttpPost]
-        public async Task<ActionResult<User>> Post([FromBody] User user)
+        public async Task<ActionResult<UserDTO>> Post([FromBody] UserDTO user,string password)
         {
-            User createdUser = await _userService.AddUser(user);
+            UserDTO createdUser = await _userService.AddUser(user, password);
             if(createdUser!=null)
-                return CreatedAtAction(nameof(Get), new{id = createdUser.UserId}, createdUser);
+                return CreatedAtAction(nameof(Get), new{id = createdUser.id}, createdUser);
             return BadRequest("Password is not strong enough");
         }
 
 
         [HttpPost("login")]
-        public async Task<ActionResult<User>> Login([FromBody] LoginUser loginUser)
+        public async Task<ActionResult<UserDTO>> Login([FromBody] LoginUserDTO loginUser)
         {
-            User user = await _userService.Login(loginUser);
+            UserDTO user = await _userService.Login(loginUser);
             if (user != null)
             {
                 return Ok(user);
@@ -57,9 +57,9 @@ namespace WebAPIShop.Controllers
         }
        
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] User user)
+        public async Task<IActionResult> Put(int id, [FromBody] UserDTO user, string password)
         {
-            bool isUpdateSuccessful = await _userService.UpdateUser(id, user);
+            bool isUpdateSuccessful = await _userService.UpdateUser(id, user, password);
             if (!isUpdateSuccessful)
             {
                 return BadRequest("Password is not strong enough");

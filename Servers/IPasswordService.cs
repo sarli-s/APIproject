@@ -1,4 +1,6 @@
 ﻿using Entitys;
+using DTOs;
+
 
 namespace Servers
 {
