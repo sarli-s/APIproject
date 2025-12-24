@@ -30,7 +30,9 @@ public class UserService : IUserService
         Password passwordAfterCheck = _passwordService.CheckPassword(password);
         if (passwordAfterCheck.Level < 3)
             return null;
-        return _mapper.Map<User, UserDTO>(await _userRepository.AddUser(_mapper.Map < UserDTO, User > (user)));
+        User user1 = _mapper.Map<UserDTO, User>(user);
+        user1.UserPassword = password;
+        return _mapper.Map<User, UserDTO>(await _userRepository.AddUser(user1));
     }
     
 
@@ -43,14 +45,17 @@ public class UserService : IUserService
         }
         else
         {
-            await _userRepository.UpdateUser(id, _mapper.Map <UserDTO, User > (user));
+            User user1 = _mapper.Map<UserDTO, User>(user);
+            user1.UserPassword = password;
+            user1.UserId = id;
+            await _userRepository.UpdateUser(user1);
             return true;
         }
     }
-    public async Task<UserDTO> Login(LoginUserDTO loginUser)
+    public async Task<UserDTO> Login(string email,string password)//LoginUserDTO loginUser)
     {
      
-        UserDTO userDTO= _mapper.Map<User, UserDTO>(await _userRepository.Login(loginUser.UserEmail, loginUser.UserPassword));
+        UserDTO userDTO= _mapper.Map<User, UserDTO>(await _userRepository.Login(email, password));
         return userDTO;
     }
     public void DeleteUser(int id)

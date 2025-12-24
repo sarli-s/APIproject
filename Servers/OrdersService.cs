@@ -24,7 +24,8 @@ public class OrdersService : IOrdersService
 
     public async Task<OrderDTO> AddOrder(OrderDTO order)
     {
-        return _mapper.Map < Order, OrderDTO > (await _orderRepository.AddOrder(_mapper.Map <OrderDTO, Order>(order)));
+        Order o = _mapper.Map<OrderDTO, Order>(order);
+        return _mapper.Map < Order, OrderDTO > (await _orderRepository.AddOrder(o));
 
     }
 }

@@ -1,10 +1,11 @@
 ﻿using Entitys;
 using Repository;
+using DTOs;
 
 namespace Servers
 {
     public interface ICategoryService
     {
-        Task<List<Category>> GetCategories();
+        Task<List<CategoryDTO>> GetCategories();
     }
 }

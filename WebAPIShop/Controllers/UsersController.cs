@@ -10,17 +10,19 @@ using Repository;
 namespace WebAPIShop.Controllers
 {
 
-
+   
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
     {
+        private readonly ILogger<UsersController> _logger;
 
         private readonly IUserService _userService;
         
-        public UsersController(IUserService userService)
+        public UsersController(IUserService userService, ILogger<UsersController> logger)
         {
             _userService = userService;
+            _logger= logger;
         }
 
         [HttpGet("{id}")]
@@ -39,7 +41,7 @@ namespace WebAPIShop.Controllers
         {
             UserDTO createdUser = await _userService.AddUser(user, password);
             if(createdUser!=null)
-                return CreatedAtAction(nameof(Get), new{id = createdUser.id}, createdUser);
+                return CreatedAtAction(nameof(Get), new{id = createdUser.UserId}, createdUser);
             return BadRequest("Password is not strong enough");
         }
 
@@ -47,9 +49,10 @@ namespace WebAPIShop.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDTO>> Login([FromBody] LoginUserDTO loginUser)
         {
-            UserDTO user = await _userService.Login(loginUser);
+            UserDTO user = await _userService.Login(loginUser.UserEmail,loginUser.UserPassword);
             if (user != null)
             {
+                _logger.LogInformation("Login attempted with User Name, {0} \n and password, {1}", loginUser.UserEmail, loginUser.UserPassword);
                 return Ok(user);
             }
             return NoContent();
@@ -64,7 +67,7 @@ namespace WebAPIShop.Controllers
             {
                 return BadRequest("Password is not strong enough");
             }
-            return NoContent();
+            return Ok();
         }
 
         [HttpDelete("{id}")]

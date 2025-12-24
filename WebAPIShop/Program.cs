@@ -2,6 +2,7 @@
 using Repository;
 using Servers;
 using Entitys;
+using NLog.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -21,8 +22,8 @@ builder.Services.AddScoped<IOrdersService, OrdersService>();
 
 
 builder.Services.AddScoped<IPasswordService, PasswordService>();
-builder.Services.AddDbContext<dbSHOPContext>(options => options.UseSqlServer
-("Data Source=srv2\\pupils;Initial Catalog=215949413_SHOP;Integrated Security=True;Trust Server Certificate=True"));
+builder.Services.AddDbContext<dbSHOPContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("home")));
+builder.Host.UseNLog();
 
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -42,7 +43,6 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/openapi/v1.json", "My API V1");
     });
 }
-
 // Configure the HTTP request pipeline.
 
 app.UseHttpsRedirection();

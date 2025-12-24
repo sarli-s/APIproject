@@ -9,7 +9,7 @@ namespace Servers
         Task<UserDTO> AddUser(UserDTO user,string password);
         void DeleteUser(int id);
         Task<UserDTO> GetUserById(int id);
-        Task<UserDTO> Login(LoginUserDTO loginUser);
+        Task<UserDTO> Login(string email,string password);
         Task<bool> UpdateUser(int id, UserDTO user, string password);
     }
 }
