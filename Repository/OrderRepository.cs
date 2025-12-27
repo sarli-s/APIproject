@@ -15,7 +15,9 @@ namespace Repository
 
         public async Task<Order> GetOrderById(int id)
         {
-            return await _dbSHOPContext.FindAsync<Order>(id);
+            //return await _dbSHOPContext.FindAsync<Order>(id);
+            Order order = await _dbSHOPContext.Orders.Include(o => o.OrderItems).FirstOrDefaultAsync(o => o.OrderId == id);
+            return order;
         }
 
 
