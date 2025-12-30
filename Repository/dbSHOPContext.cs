@@ -8,6 +8,10 @@ namespace Entitys;
 
 public partial class dbSHOPContext : DbContext
 {
+    public dbSHOPContext()
+    {
+
+    }
     public dbSHOPContext(DbContextOptions<dbSHOPContext> options)
         : base(options)
     {
