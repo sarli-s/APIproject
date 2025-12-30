@@ -25,7 +25,7 @@ namespace Repository
         {
             await _dbSHOPContext.AddAsync(order);
             await _dbSHOPContext.SaveChangesAsync();
-            return await _dbSHOPContext.Orders.FindAsync(order.OrderId);
+            return order;// await _dbSHOPContext.Orders.FindAsync(order.OrderId);
         }
 
     }

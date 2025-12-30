@@ -23,7 +23,7 @@ namespace Repository
         {
             await _dbSHOPContext.AddAsync(user);
             await _dbSHOPContext.SaveChangesAsync();
-            return await _dbSHOPContext.FindAsync<User>(user.UserId);
+            return user;
         }
 
 

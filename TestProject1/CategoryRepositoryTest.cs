@@ -1,4 +1,5 @@
 ﻿using Entitys;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using Moq.EntityFrameworkCore;
 using Repository;
@@ -27,5 +28,24 @@ namespace TestProject1
             // Assert
             Assert.Equal(categories, result);
         }
+
+        [Fact]
+        public async Task GetCategories_WhenNoCategoriesExist_ReturnsEmptyList()
+        {
+            // Arrange
+            var categories = new List<Category>() {};
+            var mockContext = new Mock<dbSHOPContext>();
+            mockContext.Setup(x => x.Categories).ReturnsDbSet(categories);
+
+            var categoryRepository = new CategoriesRepository(mockContext.Object);
+
+            // Act
+            var result = await categoryRepository.GetCategories();
+
+            // Assert
+            Assert.NotNull(result);          // לא null
+            Assert.Empty(result);            // אין פריטים = NOITEM
+        }
     }
 }
+
