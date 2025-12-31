@@ -20,7 +20,7 @@ namespace TestProject
             
             // Set up the test database connection and initialize the context
             var options = new DbContextOptionsBuilder<dbSHOPContext>()
-                .UseSqlServer("Server=DESKTOP-ER24GCJ\\SQLEXPRESS;Database=215949413_SHOP;Trusted_Connection=True;TrustServerCertificate=True;")
+                .UseSqlServer("Server=DESKTOP-4G5A9E;Database=215949413_SHOP_Test;Trusted_Connection=True;TrustServerCertificate=True;")
                 .Options;
             Context = new dbSHOPContext(options);
             Context.Database.EnsureCreated();
