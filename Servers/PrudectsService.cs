@@ -17,10 +17,22 @@ public class PrudectsService : IPrudectsService
         _mapper = mapper;
     }
 
-    public async Task<List<ProductDTO>> GetProducts(string? name, int? minPrice, int? maxprice, int[]? categoriesId,
+    public async Task<PageResponseDTO<ProductDTO>> GetProducts(string? description, int? minPrice, int? maxprice, int[]? categoriesId,
             int? limit, string? orderby, int? offset)
     {
-        return _mapper.Map<List<Product>, List<ProductDTO>>(await _productRepository.GetProducts(name, minPrice, maxprice, categoriesId, limit, orderby, offset));
+        (List<Product> items, int totalCount )= await _productRepository.GetProducts(description, minPrice, maxprice, categoriesId, limit, orderby, offset);
+
+        List<ProductDTO> itemsDTO=_mapper.Map<List<Product>, List<ProductDTO>>(items);
+        PageResponseDTO < ProductDTO > responseDTO = new PageResponseDTO<ProductDTO>()
+        {
+            Data = itemsDTO,
+            TotalItems=totalCount,
+            CurrentPage= (offset ?? 1),
+            PageSize = (limit ?? 20),
+            HasPreviousPage = ((offset ?? 1) > 1),
+            HasNextPage = ((offset ?? 1) * (limit ?? 20) < totalCount)
+        };
+        return responseDTO;
     }
 
 }

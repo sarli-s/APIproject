@@ -9,7 +9,8 @@ using TestProject;
 
 namespace TestProject1
 {
-    public class OrderRepositoryIntegrationTest : IClassFixture<DatabaseFixture>
+
+    public class OrderRepositoryIntegrationTest : IClassFixture<DatabaseFixture>,IDisposable
     {
         private readonly dbSHOPContext _dbContext;
         private readonly OrderRepository _orderRepository;
@@ -41,13 +42,13 @@ namespace TestProject1
         {
             _dbContext = databaseFixture.Context;
             _orderRepository = new OrderRepository(_dbContext);
+            ClearDatabase();
         }
 
         [Fact]
         public async Task AddOrder_ShouldAddOrderToDatabase()
         {
             // Arrange
-            ClearDatabase();
 
             var user = new User { UserFirstName = "TestUser", UserEmail = "TestUser@.com", UserPassword = "password!@#" };
             var category = new Category { CategoryName = "General" };
@@ -74,7 +75,6 @@ namespace TestProject1
         public async Task GetOrderById_WhenOrderExists_ReturnsOrderWithItems()
         {
             // Arrange
-            ClearDatabase();
 
             var user = new User { UserFirstName = "TestUser", UserEmail = "TestUser@.com", UserPassword = "password!@#" };
             var category = new Category { CategoryName = "General" };
@@ -105,14 +105,15 @@ namespace TestProject1
         public async Task GetOrderById_WhenOrderDoesNotExist_ReturnsNull()
         {
             // Act
-            ClearDatabase();
-
             var result = await _orderRepository.GetOrderById(9999);
 
             // Assert
             Assert.Null(result);
         }
 
-
+        public void Dispose()
+        {
+            ClearDatabase();
+        }
     }
 }

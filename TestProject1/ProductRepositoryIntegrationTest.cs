@@ -9,7 +9,7 @@ using TestProject;
 
 namespace TestProject1
 {
-    public class ProductRepositoryIntegrationTest : IClassFixture<DatabaseFixture>
+    public class ProductRepositoryIntegrationTest : IClassFixture<DatabaseFixture>,IDisposable
     {
         private readonly dbSHOPContext _dbContext;
         private readonly ProductRepository _productRepository;
@@ -17,6 +17,7 @@ namespace TestProject1
         {
             _dbContext = databaseFixture.Context;
             _productRepository = new ProductRepository(_dbContext);
+            ClearDatabase();
         }
         private void ClearDatabase()
         {
@@ -31,7 +32,6 @@ namespace TestProject1
         public async Task GetProducts_WhenDataExists_ReturnsAllProductsWithCategory()
         {
             // Arrange
-            ClearDatabase();
             var category = new Category { CategoryName = "TestCategory" };
             await _dbContext.Categories.AddAsync(category);
             await _dbContext.SaveChangesAsync();
@@ -46,11 +46,11 @@ namespace TestProject1
             var result = await _productRepository.GetProducts(null, null, null, null, null, null, null);
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(testProducts.Count, result.Count);
-            Assert.All(result, p => Assert.NotNull(p.Category));
+            Assert.Equal(testProducts.Count, result.TotalCount);
+            Assert.All(result.Items, p => Assert.NotNull(p.Category));
             foreach (var product in testProducts)
             {
-                Assert.Contains(result, p => p.ProductName == product.ProductName && p.Category != null);
+                Assert.Contains(result.Items, p => p.ProductName == product.ProductName && p.Category != null);
             }
         }
 
@@ -58,12 +58,16 @@ namespace TestProject1
         public async Task GetProducts_ReturnsEmpty_WhenNoDataExists()
         {
             // Arrange
-            ClearDatabase();
             // Act
             var result = await _productRepository.GetProducts(null, null, null, null, null, null, null);
             // Assert
             Assert.NotNull(result);
-            Assert.Empty(result);
+            Assert.Empty(result.Items);
+        }
+
+        public void Dispose()
+        {
+            ClearDatabase();
         }
     }
 }

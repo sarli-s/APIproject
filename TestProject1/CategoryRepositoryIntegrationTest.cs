@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 using Entitys;
 using Repository;
 using TestProject;
+using Xunit;
+
+[assembly: CollectionBehavior(DisableTestParallelization = true)]
 
 namespace TestProject1
 {
-    public class CategoryRepositoryIntegrationTest : IClassFixture<DatabaseFixture>
+    public class CategoryRepositoryIntegrationTest : IClassFixture<DatabaseFixture>, IDisposable
     {
 
         private readonly dbSHOPContext _dbContext;
@@ -18,6 +21,7 @@ namespace TestProject1
         {
             _dbContext = databaseFixture.Context;
             _categoryRepository = new CategoriesRepository(_dbContext);
+            ClearDatabase();
         }
         private void ClearDatabase()
         {
@@ -32,7 +36,6 @@ namespace TestProject1
         [Fact]
         public async Task GetCategories_ReturnsAllCategories_whenDataExsists()
         {
-            ClearDatabase();
 
             // Arrange
             var categories = new List<Category>
@@ -57,8 +60,6 @@ namespace TestProject1
         public async Task GetCategories_ReturnsEmpty_WhenNoDataExists()
         {
             // Arrange
-            // Ensure the Categories table is empty
-            ClearDatabase();
 
 
             // Act
@@ -66,6 +67,11 @@ namespace TestProject1
             // Assert
             Assert.NotNull(result);
             Assert.Empty(result);
+        }
+
+        public void Dispose()
+        {
+            ClearDatabase();
         }
     }
 }

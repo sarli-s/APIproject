@@ -25,13 +25,14 @@ namespace WebAPIShop.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<ProductDTO>>> Get(string? name, int? minPrice, int? maxPrice, int[]? categoriesId,
+        public async Task<ActionResult<List<ProductDTO>>> Get(string? description, int? minPrice, int? maxPrice, int[]? categoriesId,
             int? limit, string? orderby, int offset=1) 
         {
-            List<ProductDTO> products = await _prudectsService.GetProducts(name,minPrice,maxPrice,categoriesId,limit,orderby,offset);
-            if(products != null)
+
+            PageResponseDTO <ProductDTO> metaData= await _prudectsService.GetProducts(description, minPrice,maxPrice,categoriesId,limit,orderby,offset);
+            if (metaData != null)
             {
-                return Ok(products);
+                return Ok(metaData);
             }
             return NoContent();
         }

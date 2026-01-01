@@ -10,7 +10,7 @@ using TestProject;
 
 namespace TestProject1
 {
-    public class UserRepositoryIntegrationTests : IClassFixture<DatabaseFixture>
+    public class UserRepositoryIntegrationTests : IClassFixture<DatabaseFixture>,IDisposable
     {
         private readonly dbSHOPContext _dbContext;
         private readonly UserRepository _userRepository;
@@ -18,6 +18,8 @@ namespace TestProject1
         {
             _dbContext = databaseFixture.Context;
             _userRepository = new UserRepository(_dbContext);
+            ClearDatabase();
+
         }
         private void ClearDatabase()
         {
@@ -33,7 +35,6 @@ namespace TestProject1
         public async Task GetUserById_ReturnsNull_WhenUserDontExist()
         {
             //Arange
-            ClearDatabase();
 
             //Act
             var result = await _userRepository.GetUserById(999);
@@ -46,7 +47,6 @@ namespace TestProject1
         public async Task GetUserById_ReturnsUserWithOrders_WhenUserExists()
         {
             //Arange
-            ClearDatabase();
 
             var user = new User { UserFirstName = "Alice", UserEmail = "alice@db.com", UserPassword = "alice@db.comFGH123" };
             await _dbContext.Users.AddAsync(user);
@@ -67,7 +67,6 @@ namespace TestProject1
         public async Task AddUser_ShouldAddOrderToDatabase()
         {
             // Arrange
-            ClearDatabase();
 
             var user = new User { UserFirstName = "TestUser", UserEmail = "TestUser@.com", UserPassword = "pasSSsword!@#" };
 
@@ -86,7 +85,6 @@ namespace TestProject1
         public async Task Login_ReturnsUser_WhenCredentialsMatch()
         {
             // Arrange
-            ClearDatabase();
             var user = new User { UserFirstName = "TestUser", UserEmail = "TestUser@.com", UserPassword = "pasSSsword!@#" };
             await _dbContext.Users.AddAsync(user);
             await _dbContext.SaveChangesAsync();
@@ -103,7 +101,6 @@ namespace TestProject1
         public async Task Login_ReturnsNull_WhenPasswordNotMatch()
         {
             // Arrange
-            ClearDatabase();
             var user = new User { UserFirstName = "TestUser", UserEmail = "TestUser@.com", UserPassword = "pasSSsword!@#" };
             await _dbContext.Users.AddAsync(user);
             await _dbContext.SaveChangesAsync();
@@ -119,7 +116,6 @@ namespace TestProject1
         public async Task Login_ReturnsNull_WhenEmailNotMatch()
         {
             // Arrange
-            ClearDatabase();
             var user = new User { UserFirstName = "TestUser", UserEmail = "TestUser@.com", UserPassword = "pasSSsword!@#" };
             await _dbContext.Users.AddAsync(user);
             await _dbContext.SaveChangesAsync();
@@ -135,7 +131,6 @@ namespace TestProject1
         public async Task UpdateUser_ShouldUpdateUserInDatabase()
         {
             // Arrange
-            ClearDatabase();
             var user = new User { UserFirstName = "OldName", UserEmail = "user@.com", UserPassword = "oldPassword!@#" };
             await _dbContext.Users.AddAsync(user);
             await _dbContext.SaveChangesAsync();
@@ -151,5 +146,9 @@ namespace TestProject1
 
         }
 
+        public void Dispose()
+        {
+            ClearDatabase();
+        }
     }
 }
