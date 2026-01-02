@@ -22,7 +22,7 @@ builder.Services.AddScoped<IOrdersService, OrdersService>();
 
 
 builder.Services.AddScoped<IPasswordService, PasswordService>();
-builder.Services.AddDbContext<dbSHOPContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("myComputer")));
+builder.Services.AddDbContext<dbSHOPContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("seminar")));
 builder.Host.UseNLog();
 
 

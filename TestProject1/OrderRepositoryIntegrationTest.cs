@@ -10,8 +10,9 @@ using TestProject;
 namespace TestProject1
 {
 
-    public class OrderRepositoryIntegrationTest : IClassFixture<DatabaseFixture>,IDisposable
+    public class OrderRepositoryIntegrationTest : IDisposable
     {
+        private readonly DatabaseFixture _fixture;
         private readonly dbSHOPContext _dbContext;
         private readonly OrderRepository _orderRepository;
 
@@ -28,21 +29,12 @@ namespace TestProject1
                 }
             };
         }
-        private void ClearDatabase()
-        {
-            _dbContext.OrderItems.RemoveRange(_dbContext.OrderItems);
-            _dbContext.Orders.RemoveRange(_dbContext.Orders);
-            _dbContext.Products.RemoveRange(_dbContext.Products);
-            _dbContext.Categories.RemoveRange(_dbContext.Categories);
-            _dbContext.Users.RemoveRange(_dbContext.Users);
-            _dbContext.SaveChanges();
-        }
 
-        public OrderRepositoryIntegrationTest(DatabaseFixture databaseFixture)
+        public OrderRepositoryIntegrationTest()
         {
-            _dbContext = databaseFixture.Context;
+            _fixture = new DatabaseFixture();
+            _dbContext = _fixture.Context;
             _orderRepository = new OrderRepository(_dbContext);
-            ClearDatabase();
         }
 
         [Fact]
@@ -113,7 +105,7 @@ namespace TestProject1
 
         public void Dispose()
         {
-            ClearDatabase();
+            _fixture.Dispose();
         }
     }
 }
