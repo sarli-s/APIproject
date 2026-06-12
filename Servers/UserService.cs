@@ -105,6 +105,7 @@ public async Task<ResultValidUser<UserDTO>> AddUser(UserWithPasswordDTO user)
 
         return resultValidUser;
     }
+    
 
     public async Task<ResultValidUser<bool>> UpdateUser(int id, UserWithPasswordDTO user)
     {
