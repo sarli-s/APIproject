@@ -40,6 +40,17 @@ builder.Host.UseNLog();
 builder.Services.AddScoped<IRatingRepository, RatingRepository>();
 builder.Services.AddScoped<IRatingService, RatingService>();
 
+// --- AI / LLM ---
+builder.Services.AddScoped<IChatRepository, ChatRepository>();
+builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddScoped<ISearchService, SearchService>();
+builder.Services.AddHttpClient("PythonAI")
+    .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+    {
+        ServerCertificateCustomValidationCallback =
+            HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+    });
+
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 // --- JWT Authentication ---
@@ -129,5 +140,12 @@ app.UseAuthorization();
 app.UseStaticFiles();
 
 app.MapControllers();
+
+// Seed the AI vector store on startup
+using (var scope = app.Services.CreateScope())
+{
+    try { await scope.ServiceProvider.GetRequiredService<ISearchService>().SeedAsync(); }
+    catch { /* AI server may not be up yet; re-seed via POST /api/search/seed */ }
+}
 
 app.Run();

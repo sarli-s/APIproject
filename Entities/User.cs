@@ -17,7 +17,13 @@ public partial class User
 
     public string UserPassword { get; set; }
 
-    public bool IsAdmin { get; set; }
+    public string City { get; set; }
+
+    public string Address { get; set; }
+
+    public string Phon { get; set; }
+
+    public string Role { get; set; }
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 }

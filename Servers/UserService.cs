@@ -148,7 +148,7 @@ public async Task<ResultValidUser<UserDTO>> AddUser(UserWithPasswordDTO user)
             new(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
             new(JwtRegisteredClaimNames.Email, user.UserEmail),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new(ClaimTypes.Role, user.IsAdmin ? "Admin" : "User")
+            new(ClaimTypes.Role, user.Role)
         };
 
         var token = new JwtSecurityToken(

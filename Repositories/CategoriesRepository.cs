@@ -1,22 +1,22 @@
-﻿using System.Text.Json;
 using Entities;
-using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
 namespace Repositories
 {
     public class CategoriesRepository : ICategoriesRepository
     {
-        dbSHOPContext _dbSHOPContext;
+        private readonly dbSHOPContext _db;
 
-        public CategoriesRepository(dbSHOPContext dbSHOPContext)
-        { 
-            _dbSHOPContext= dbSHOPContext;
-        }
+        public CategoriesRepository(dbSHOPContext db) => _db = db;
+
         public async Task<List<Category>> GetCategories()
         {
-            return await _dbSHOPContext.Categories.ToListAsync();
+            return await _db.Categories.ToListAsync();
         }
 
+        public async Task<Category> GetCategoryByName(string name)
+        {
+            return await _db.Categories.FirstOrDefaultAsync(c => c.CategoryName == name);
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Entities;
+using Entities;
 
 namespace Repositories
 {
@@ -6,5 +6,7 @@ namespace Repositories
     {
         Task<Order> AddOrder(Order order);
         Task<Order> GetOrderById(int id);
+        Task<IEnumerable<Order>> GetAllOrders();
+        Task<bool> UpdateOrder(Order order);
     }
 }

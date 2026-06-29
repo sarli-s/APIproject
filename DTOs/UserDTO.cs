@@ -5,5 +5,8 @@ namespace DTOs
         string UserEmail,
         string UserFirstName,
         string UserLastName,
-        bool IsAdmin);
+        string? City,
+        string? Address,
+        string? Phon,
+        string Role = "User");
 }

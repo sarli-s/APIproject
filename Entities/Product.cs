@@ -17,6 +17,12 @@ public partial class Product
 
     public string Description { get; set; }
 
+    public string ImageUrl { get; set; }
+
+    public string Colors { get; set; }
+
+    public string Toptext { get; set; }
+
     public virtual Category Category { get; set; }
 
     public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();

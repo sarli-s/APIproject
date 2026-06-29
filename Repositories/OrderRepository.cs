@@ -1,33 +1,42 @@
-﻿using System.Text.Json;
 using Entities;
-using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
 namespace Repositories
 {
     public class OrderRepository : IOrderRepository
     {
-        dbSHOPContext _dbSHOPContext;
-        public OrderRepository(dbSHOPContext dbSHOPContext)
-        {
-            _dbSHOPContext = dbSHOPContext;
-        }
+        private readonly dbSHOPContext _db;
+
+        public OrderRepository(dbSHOPContext db) => _db = db;
 
         public async Task<Order> GetOrderById(int id)
         {
-            //return await _dbSHOPContext.FindAsync<Order>(id);
-            Order order = await _dbSHOPContext.Orders.Include(o => o.OrderItems).FirstOrDefaultAsync(o => o.OrderId == id);
-            return order;
+            return await _db.Orders
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
+                .FirstOrDefaultAsync(o => o.OrderId == id);
         }
-
 
         public async Task<Order> AddOrder(Order order)
         {
-
-            await _dbSHOPContext.AddAsync(order);
-            await _dbSHOPContext.SaveChangesAsync();
-            return order;// await _dbSHOPContext.Orders.FindAsync(order.OrderId);
+            await _db.AddAsync(order);
+            await _db.SaveChangesAsync();
+            return await GetOrderById(order.OrderId);
         }
 
+        public async Task<IEnumerable<Order>> GetAllOrders()
+        {
+            return await _db.Orders
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
+                .ToListAsync();
+        }
+
+        public async Task<bool> UpdateOrder(Order order)
+        {
+            _db.Orders.Update(order);
+            await _db.SaveChangesAsync();
+            return true;
+        }
     }
 }

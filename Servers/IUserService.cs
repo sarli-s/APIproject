@@ -13,5 +13,6 @@ namespace Servers
         Task<bool> ExistsUserWithTheSameEmail(int id, string email);
         bool IsValidEmail(string email);
         string GenerateToken(UserDTO user);
+        Task DeleteUser(int id);
     }
 }

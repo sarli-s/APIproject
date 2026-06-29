@@ -47,6 +47,9 @@ public partial class dbSHOPContext : DbContext
             entity.Property(e => e.OrderDate).HasColumnName("ORDER_DATE");
             entity.Property(e => e.OrderSum).HasColumnName("ORDER_SUM");
             entity.Property(e => e.UserId).HasColumnName("USER_ID");
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .HasColumnName("STATUS");
 
             entity.HasOne(d => d.User).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.UserId)
@@ -61,6 +64,11 @@ public partial class dbSHOPContext : DbContext
             entity.Property(e => e.OrderId).HasColumnName("ORDER_ID");
             entity.Property(e => e.ProductId).HasColumnName("PRODUCT_ID");
             entity.Property(e => e.Quantity).HasColumnName("QUANTITY");
+            entity.Property(e => e.Popularcolore)
+                .HasMaxLength(50)
+                .HasColumnName("POPULARCOLORE");
+            entity.Property(e => e.Customtext)
+                .HasColumnName("CUSTOMTEXT");
 
             entity.HasOne(d => d.Order).WithMany(p => p.OrderItems)
                 .HasForeignKey(d => d.OrderId)
@@ -80,6 +88,16 @@ public partial class dbSHOPContext : DbContext
             entity.Property(e => e.Description)
                 .IsUnicode(false)
                 .HasColumnName("DESCRIPTION");
+            entity.Property(e => e.ImageUrl)
+                .HasMaxLength(500)
+                .HasColumnName("IMAGE_URL");
+            entity.Property(e => e.Colors)
+                .HasMaxLength(200)
+                .IsUnicode(false)
+                .HasColumnName("COLORS");
+            entity.Property(e => e.Toptext)
+                .HasMaxLength(200)
+                .HasColumnName("TOPTEXT");
             entity.Property(e => e.Price).HasColumnName("PRICE");
             entity.Property(e => e.ProductName)
                 .IsRequired()
@@ -116,8 +134,23 @@ public partial class dbSHOPContext : DbContext
                 .HasMaxLength(60)
                 .IsUnicode(false)
                 .HasColumnName("userPassword");
-            entity.Property(e => e.IsAdmin)
-                .HasColumnName("IsAdmin");
+            entity.Property(e => e.City)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("City");
+            entity.Property(e => e.Address)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("Address");
+            entity.Property(e => e.Phon)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("Phon");
+            entity.Property(e => e.Role)
+                .IsRequired()
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("Role");
         });
 
         modelBuilder.Entity<Rating>(entity =>
