@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
@@ -24,7 +24,8 @@ namespace PresidentsApp.Middlewares
             {
                 _logger.LogError($"Logged From My Middleware {e.Message}  {e.StackTrace}");
                 httpContext.Response.StatusCode = 500;
-                await httpContext.Response.WriteAsync("Internal Error In Server");
+                httpContext.Response.ContentType = "application/json";
+                await httpContext.Response.WriteAsync("{\"error\":\"Internal Error In Server\"}");
             }
         }
 
