@@ -41,7 +41,7 @@ namespace TestProject1
         [Fact]
         public async Task AddOrder_PersistsOrderAndItemsToDatabase()
         {
-            var user = new User { UserFirstName = "TestUser", UserEmail = "TestUser@.com", UserPassword = "password!@#" };
+            var user = new User { Role = "User", UserFirstName = "TestUser", UserEmail = "TestUser@.com", UserPassword = "password!@#" };
             var category = new Category { CategoryName = "General" };
             await _dbContext.Users.AddAsync(user);
             await _dbContext.Categories.AddAsync(category);
@@ -82,7 +82,7 @@ namespace TestProject1
         {
             // Arrange
 
-            var user = new User { UserFirstName = "TestUser", UserEmail = "TestUser@.com", UserPassword = "password!@#" };
+            var user = new User { Role = "User", UserFirstName = "TestUser", UserEmail = "TestUser@.com", UserPassword = "password!@#" };
             var category = new Category { CategoryName = "General" };
             await _dbContext.Users.AddAsync(user);
             await _dbContext.Categories.AddAsync(category);

@@ -39,7 +39,7 @@ namespace TestProject1
         {
             //Arange
 
-            var user = new User { UserFirstName = "Alice", UserEmail = "alice@db.com", UserPassword = "alice@db.comFGH123" };
+            var user = new User { Role = "User", UserFirstName = "Alice", UserEmail = "alice@db.com", UserPassword = "alice@db.comFGH123" };
             await _dbContext.Users.AddAsync(user);
             await _dbContext.SaveChangesAsync();
 
@@ -59,7 +59,7 @@ namespace TestProject1
         {
             // Arrange
 
-            var user = new User { UserFirstName = "TestUser", UserEmail = "TestUser@.com", UserPassword = "pasSSsword!@#" };
+            var user = new User { Role = "User", UserFirstName = "TestUser", UserEmail = "TestUser@.com", UserPassword = "pasSSsword!@#" };
 
             // Act
             var result = await _userRepository.AddUser(user);
@@ -72,16 +72,17 @@ namespace TestProject1
             Assert.NotNull(userFromDb);
         }
 
+        // The repository finds the user by email; the password is verified in UserService (BCrypt)
         [Fact]
-        public async Task Login_ReturnsUser_WhenCredentialsMatch()
+        public async Task Login_ReturnsUser_WhenEmailMatches()
         {
             // Arrange
-            var user = new User { UserFirstName = "TestUser", UserEmail = "TestUser@.com", UserPassword = "pasSSsword!@#" };
+            var user = new User { Role = "User", UserFirstName = "TestUser", UserEmail = "TestUser@.com", UserPassword = "pasSSsword!@#" };
             await _dbContext.Users.AddAsync(user);
             await _dbContext.SaveChangesAsync();
 
             // Act
-            var result = await _userRepository.Login("TestUser@.com", "pasSSsword!@#");
+            var result = await _userRepository.Login("TestUser@.com");
 
             // Assert
             Assert.NotNull(result);
@@ -89,30 +90,15 @@ namespace TestProject1
         }
 
         [Fact]
-        public async Task Login_ReturnsNull_WhenPasswordNotMatch()
-        {
-            // Arrange
-            var user = new User { UserFirstName = "TestUser", UserEmail = "TestUser@.com", UserPassword = "pasSSsword!@#" };
-            await _dbContext.Users.AddAsync(user);
-            await _dbContext.SaveChangesAsync();
-
-            // Act
-            var result = await _userRepository.Login("TestUser@.com", "wrongPassword!@#");
-
-            // Assert
-            Assert.Null(result);
-        }
-
-        [Fact]
         public async Task Login_ReturnsNull_WhenEmailNotMatch()
         {
             // Arrange
-            var user = new User { UserFirstName = "TestUser", UserEmail = "TestUser@.com", UserPassword = "pasSSsword!@#" };
+            var user = new User { Role = "User", UserFirstName = "TestUser", UserEmail = "TestUser@.com", UserPassword = "pasSSsword!@#" };
             await _dbContext.Users.AddAsync(user);
             await _dbContext.SaveChangesAsync();
 
             // Act
-            var result = await _userRepository.Login("wrongEmail@.com", "pasSSsword!@#");
+            var result = await _userRepository.Login("wrongEmail@.com");
 
             // Assert
             Assert.Null(result);
@@ -122,7 +108,7 @@ namespace TestProject1
         public async Task UpdateUser_ShouldUpdateUserInDatabase()
         {
             // Arrange
-            var user = new User { UserFirstName = "OldName", UserEmail = "user@.com", UserPassword = "oldPassword!@#" };
+            var user = new User { Role = "User", UserFirstName = "OldName", UserEmail = "user@.com", UserPassword = "oldPassword!@#" };
             await _dbContext.Users.AddAsync(user);
             await _dbContext.SaveChangesAsync();
 

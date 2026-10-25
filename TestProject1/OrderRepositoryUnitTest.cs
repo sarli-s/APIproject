@@ -81,7 +81,8 @@ namespace TestProject1
             };
 
             var mockContext = new Mock<dbSHOPContext>();
-            mockContext.Setup(x => x.Orders).ReturnsDbSet(new List<Order>());
+            // AddOrder reloads the saved order (with its items) after saving
+            mockContext.Setup(x => x.Orders).ReturnsDbSet(new List<Order> { order });
 
             var Orderrepository = new OrderRepository(mockContext.Object);
 

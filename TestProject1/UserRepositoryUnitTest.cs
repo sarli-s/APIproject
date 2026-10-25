@@ -97,8 +97,9 @@ public class UserRepositoryUnitTest
 
     }
 
+    // The repository finds the user by email; the password is verified in UserService (BCrypt)
     [Fact]
-    public async Task Login_ReturnsUser_WhenCredentialsMatch()
+    public async Task Login_ReturnsUser_WhenEmailMatches()
     {
         // Arrange
         var users =GetTestUsers();
@@ -109,29 +110,11 @@ public class UserRepositoryUnitTest
         var userRepository = new UserRepository(mockContext.Object);
 
         //Act
-        var result = await userRepository.Login("alice@test.com", "alice@test.comSD%^67");
+        var result = await userRepository.Login("alice@test.com");
 
         //Assert
         Assert.NotNull(result);
         Assert.Equal(1, result.UserId);
-    }
-
-    [Fact]
-    public async Task Login_ReturnsNull_WhenPasswordNotMatch()
-    {
-        // Arrange
-        var users = GetTestUsers();
-
-        var mockContext = new Mock<dbSHOPContext>();
-        mockContext.Setup(x => x.Users).ReturnsDbSet(users);
-
-        var userRepository = new UserRepository(mockContext.Object);
-
-        //Act
-        var result = await userRepository.Login("alice@test.com", "wrongPassword");
-
-        //Assert
-        Assert.Null(result);
     }
 
     [Fact]
@@ -146,7 +129,7 @@ public class UserRepositoryUnitTest
         var userRepository = new UserRepository(mockContext.Object);
 
         //Act
-        var result = await userRepository.Login("wrongEmail", "alice@test.comSD%^67");
+        var result = await userRepository.Login("wrongEmail");
 
         //Assert
         Assert.Null(result);

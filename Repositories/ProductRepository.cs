@@ -17,7 +17,7 @@ namespace Repositories
         public async Task<(List<Product> Items, int TotalCount)> GetProducts(string? description, int? minPrice,
             int? maxPrice, int[]? categoryIds, int? limit, string? orderby, int? position)
         {
-            var query = _db.Products.AsQueryable();
+            IQueryable<Product> query = _db.Products;
 
             if (!string.IsNullOrEmpty(description))
                 query = query.Where(p => p.Description.Contains(description));
