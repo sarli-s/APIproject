@@ -20,6 +20,10 @@ namespace Servers
 
         // Extracts the salt from hashedPassword automatically and compares
         public bool VerifyPassword(string plainPassword, string hashedPassword)
-            => BCrypt.Net.BCrypt.Verify(plainPassword, hashedPassword);
+        {
+            // users saved before hashing was added have a plain-text password, which is not a valid BCrypt hash
+            try { return BCrypt.Net.BCrypt.Verify(plainPassword, hashedPassword); }
+            catch (BCrypt.Net.SaltParseException) { return false; }
+        }
     }
 }

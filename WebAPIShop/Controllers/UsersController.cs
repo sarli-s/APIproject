@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 using Servers;
 using DTOs;
 
@@ -66,10 +67,13 @@ namespace WebAPIShop.Controllers
             return Ok();
         }
 
-        [AuthorizeRoles("Admin")] // only admin can update any user's profile
+        [Authorize] // a user can update their own profile; admin can update anyone's
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] UserWithPasswordDTO user)
         {
+            string? callerId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub");
+            if (callerId != id.ToString() && !User.IsInRole("Admin")) return Forbid();
+
             ResultValidUser<bool> result = await _userService.UpdateUser(id, user);
             if (result.data) return Ok();
             if (result.InvalidEmail) return BadRequest("Email is not valid");

@@ -75,6 +75,16 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
 });
 
+// --- CORS (Angular dev server; credentials needed for the jwt cookie) ---
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngular", policy => policy
+        .WithOrigins("http://localhost:4200")
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials());
+});
+
 // --- Controllers & Rate Limiting ---
 builder.Services.AddControllers();
 builder.Services.AddCustomRateLimiter();
@@ -126,6 +136,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("AllowAngular");
 app.UseRateLimiter();
 
 app.UseErrorHandlingMiddleware();

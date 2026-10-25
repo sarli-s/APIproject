@@ -99,6 +99,7 @@ public async Task<ResultValidUser<UserDTO>> AddUser(UserWithPasswordDTO user)
 
         User user1 = _mapper.Map<UserWithPasswordDTO, User>(user);
         user1.UserPassword = _passwordService.HashPassword(user.UserPassword); // hash before saving
+        user1.Role = "User"; // never trust a role sent by the client
         UserDTO user2 = _mapper.Map<User, UserDTO>(await _userRepository.AddUser(user1));
 
         ResultValidUser<UserDTO> resultValidUser = new ResultValidUser<UserDTO>(false, false, false, user2);
@@ -124,8 +125,12 @@ public async Task<ResultValidUser<UserDTO>> AddUser(UserWithPasswordDTO user)
         }
         else
         {
-            User user1 = _mapper.Map<UserWithPasswordDTO, User>(user);
+            User user1 = await _userRepository.GetUserById(id);
+            if (user1 == null) return new ResultValidUser<bool>(false, false, false, false);
+            string role = user1.Role; // role can't be changed through profile update
+            _mapper.Map(user, user1);
             user1.UserId = id;
+            user1.Role = role;
             user1.UserPassword = _passwordService.HashPassword(user.UserPassword); // hash before saving
             await _userRepository.UpdateUser(user1);
             await _cache.RemoveAsync($"user:{id}");
