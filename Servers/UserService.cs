@@ -141,6 +141,12 @@ public async Task<ResultValidUser<UserDTO>> AddUser(UserWithPasswordDTO user)
         return _mapper.Map<User, UserDTO>(user);
     }
 
+    public async Task DeleteUser(int id)
+    {
+        await _userRepository.DeleteUser(id);
+        await _cache.RemoveAsync($"user:{id}");
+    }
+
     public string GenerateToken(UserDTO user)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
