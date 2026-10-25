@@ -11,3 +11,6 @@ appsettings.Development.json
 logs/
 logger-*.json
 *.Backup.tmp
+
+# docker compose secrets
+.env
