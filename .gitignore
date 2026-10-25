@@ -14,3 +14,6 @@ logger-*.json
 
 # docker compose secrets
 .env
+
+# personal documents
+*.docx
